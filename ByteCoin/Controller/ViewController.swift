@@ -29,7 +29,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let selectedCurrency = coinManager.currencyArray[row]
-        let coinPrice = coinManager.getCoinPrice(for: selectedCurrency)
+        coinManager.getCoinPrice(for: selectedCurrency)
     }
 
     
@@ -49,12 +49,20 @@ extension ViewController: CoinManagerDelegate{
     }
     
     func didUpdateValues(_ coinManager: CoinManager, data: CoinData){
-        print("here!")
-        print(data.asset_id_base)
         DispatchQueue.main.async {
-            self.currencyLabel.text = data.asset_id_base
-            self.bitcoinLabel.text = String(data.rate)
+            self.currencyLabel.text = data.asset_id_quote
+            self.bitcoinLabel.text = String(self.formatRate(for: data.rate))
         }
+    }
+    
+    func formatRate(for rate: Double) -> String{
+        let currencyFormatter = NumberFormatter()
+        currencyFormatter.usesGroupingSeparator = true
+        currencyFormatter.numberStyle = .decimal
+        currencyFormatter.decimalSeparator = "."
+        currencyFormatter.groupingSeparator = " "
+        let formattedRate = currencyFormatter.string(from: rate as NSNumber)!
+        return formattedRate
     }
 }
 
