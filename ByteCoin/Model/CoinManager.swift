@@ -23,7 +23,6 @@ struct CoinManager {
     
     func getCoinPrice(for currency: String){
         let urlString = "\(baseURL)/\(currency)?apikey=\(apiKey)"
-        print(urlString)
         performRequest(urlString: urlString)
     }
     
@@ -38,7 +37,6 @@ struct CoinManager {
                 }
                 if let safeData = data {
                     if let decodedData = self.parseJSON(coinData: safeData){
-                        print(decodedData.asset_id_base)
                         self.delegate?.didUpdateValues(self, data: decodedData)
                     }
 
