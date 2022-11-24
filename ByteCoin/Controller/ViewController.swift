@@ -9,10 +9,12 @@
 import UIKit
 
 class ViewController: UIViewController {
-    @IBOutlet weak var currencyLabel: UILabel!
     @IBOutlet weak var currencyPicker: UIPickerView!
     @IBOutlet weak var bitcoinLabel: UILabel!
-
+    @IBOutlet weak var dollarLabel: UILabel!
+    @IBOutlet weak var rubleLabel: UILabel!
+    
+    @IBOutlet var currencyLabels: [UILabel]!
     var coinManager = CoinManager()
     
     override func viewDidLoad() {
@@ -23,7 +25,7 @@ class ViewController: UIViewController {
     }
 }
 
-//MARK: - WeatherManagerDelegate
+//MARK: - CoinManagerDelegate
 
 extension ViewController: CoinManagerDelegate{
     func didFailWithError(error: Error){
@@ -32,8 +34,16 @@ extension ViewController: CoinManagerDelegate{
     
     func didUpdateValues(_ coinManager: CoinManager, data: CoinData){
         DispatchQueue.main.async {
-            self.currencyLabel.text = data.asset_id_quote
-            self.bitcoinLabel.text = String(self.formatRate(for: data.rate))
+            for label in self.currencyLabels{
+                label.text = data.asset_id_quote
+            }
+            if data.asset_id_base == "BTC"{
+                self.bitcoinLabel.text = String(formatRate(for: data.rate))
+            } else if data.asset_id_base == "USD"{
+                self.dollarLabel.text = String(formatRate(for: data.rate))
+            } else if data.asset_id_base == "RUB"{
+                self.rubleLabel.text = String(formatRate(for: data.rate))}
+            }
         }
     }
     
@@ -46,7 +56,6 @@ extension ViewController: CoinManagerDelegate{
         let formattedRate = currencyFormatter.string(from: rate as NSNumber)!
         return formattedRate
     }
-}
 
 
 //MARK: - UIPickerViewDelegate & DataSource
@@ -66,6 +75,8 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource{
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let selectedCurrency = coinManager.currencyArray[row]
-        coinManager.getCoinPrice(for: selectedCurrency)
+        coinManager.getCoinPrice(initial: "BTC", for: selectedCurrency)
+        coinManager.getCoinPrice(initial: "USD", for: selectedCurrency)
+        coinManager.getCoinPrice(initial: "RUB", for: selectedCurrency)
     }
 }

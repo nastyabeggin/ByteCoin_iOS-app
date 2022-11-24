@@ -123,6 +123,9 @@
 		ADA8ABFD2329367100626376 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				KnownAssetTags = (
+					EphiriumLabel,
+				);
 				LastSwiftUpdateCheck = 1100;
 				LastUpgradeCheck = 1410;
 				ORGANIZATIONNAME = "The App Brewery";
